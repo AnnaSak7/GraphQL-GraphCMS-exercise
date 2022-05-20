@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { graphql, UniqueFieldDefinitionNamesRule } from "graphql";
+import { graphql } from "graphql";
 import { gql, GraphQLClient } from "graphql-request";
 import Link from "next/link";
+import Image from "next/image";
 
 export const getServerSideProps = async (pageContext) => {
   const url = process.env.ENDPOINT;
@@ -49,9 +50,18 @@ export const getServerSideProps = async (pageContext) => {
   };
 };
 
+const changeToSeen = async (slug) => {
+  await fetch("/api/changeToSeen", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ slug }),
+  });
+};
+
 const Video = ({ video }) => {
   const [watching, setWatching] = useState(false);
-  console.log(video);
   return (
     <>
       {!watching && (
@@ -66,11 +76,14 @@ const Video = ({ video }) => {
           <p>{video.tags.join(", ")}</p>
           <p>{video.description}</p>
           <Link href="/">
-            <p>Go Back</p>
+            <a>
+              <p>GO BACK</p>
+            </a>
           </Link>
           <button
-            className={"video-overlay"}
+            className="video-overlay"
             onClick={() => {
+              changeToSeen(video.slug);
               watching ? setWatching(false) : setWatching(true);
             }}
           >
@@ -79,10 +92,14 @@ const Video = ({ video }) => {
         </div>
       )}
       {watching && (
-        <video width="100%" control>
+        <video width="100%" controls>
           <source src={video.mp4.url} type="video/mp4" />
         </video>
       )}
+      <div
+        className="info-footer"
+        onClick={() => (watching ? setWatching(false) : null)}
+      ></div>
     </>
   );
 };
