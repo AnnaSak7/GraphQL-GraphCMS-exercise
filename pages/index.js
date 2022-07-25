@@ -110,7 +110,7 @@ export default function Home({ videos, account }) {
           </Link>
           <Link href="#animation">
             <div className="franchise" id="ghibli">
-              <Image src={ghibliLogo} layout="fixed" />
+              <Image src={ghibliLogo} over />
             </div>
           </Link>
         </div>
